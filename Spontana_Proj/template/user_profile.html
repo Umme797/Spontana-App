@@ -1,0 +1,173 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ user.username }} Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes borderGradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .gradient-border {
+            padding: 4px;
+            background: linear-gradient(270deg, #ff6ec4, #7873f5, #66e6ff, #fddb92);
+            background-size: 800% 800%;
+            animation: borderGradient 8s ease infinite;
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-yellow-50 via-orange-50 to-pink-100 min-h-screen text-gray-800 font-sans">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center px-4 py-3 bg-white shadow-md sticky top-0 z-10">
+        <div class="text-xl font-bold text-orange-600 flex items-center gap-2">
+            🌀 <span>Spontana</span>
+        </div>
+        <!-- Toggle Button -->
+        <div class="relative">
+            <button id="toggleMenuBtn" class="text-xl text-pink-500 focus:outline-none">⚙️</button>
+
+            <div id="toggleMenu"
+                class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-md z-20">
+                <a href="/home" class="block px-4 py-2 hover:bg-gray-100">🏠 Home</a>
+                {% if request.user.is_authenticated %}
+                <a href="/activity_journal/" class="block px-4 py-2 hover:bg-gray-100">📒 Activity Journal</a>
+                <a href="/activity_journal/add_journal/" class="block px-4 py-2 hover:bg-gray-100">➕ Add Journal</a>
+                <a href="/user_profile" class="block px-4 py-2 hover:bg-gray-100">👤 User Profile</a>
+                <a href="/logout" class="block px-4 py-2 hover:bg-gray-100">🚪 Logout</a>
+                {% else %}
+                <a href="/login" class="block px-4 py-2 hover:bg-gray-100">🔐 Login</a>
+                <a href="/register" class="block px-4 py-2 hover:bg-gray-100">📝 Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-6">
+        <div class="flex justify-between items-center mb-8 flex-wrap gap-4">
+            <h1 class="text-2xl sm:text-3xl font-bold text-purple-700">{{ user.username }} </h1>
+            <div class="relative">
+                <button id="profileToggleBtn" class="text-2xl text-purple-600 focus:outline-none">👤</button>
+                <div id="profileMenu"
+                    class="hidden absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-lg shadow-md z-20">
+                    <a href="/user_profile" class="block px-4 py-2 hover:bg-gray-100">👤 My Profile</a>
+                    <a href="/activity_journal" class="block px-4 py-2 hover:bg-gray-100">📒 My Journals</a>
+                    <a href="/logout" class="block px-4 py-2 hover:bg-gray-100">🚪 Logout</a>
+                </div>
+            </div>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+            <div class="flex flex-col md:flex-row gap-6 items-center md:items-start">
+                <!-- Profile Image -->
+                <div class="flex flex-col items-center gap-2">
+                    <div class="gradient-border rounded-full">
+                        <div
+                            class="relative w-36 md:w-40 aspect-square overflow-hidden rounded-full bg-white shadow-md group">
+                            {% if profile.image %}
+                            <img src="{{ profile.image.url }}" alt="Profile Image"
+                                class="w-full h-full object-cover rounded-full" />
+                            {% else %}
+                            <div
+                                class="w-full h-full bg-gray-300 flex items-center justify-center text-gray-500 text-sm rounded-full">
+                                No Image
+                            </div>
+                            {% endif %}
+                            <label
+                                class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs font-semibold cursor-pointer transition-opacity duration-200">
+                                Change Image
+                                <input type="file" name="profile_image" accept="image/*" class="hidden" />
+                            </label>
+                        </div>
+                    </div>
+                    <label class="cursor-pointer text-purple-600 hover:text-purple-800 font-semibold">
+                        Change Image
+                        <input type="file" name="profile_image" accept="image/*" class="hidden"
+                            onchange="this.form.submit()" />
+                    </label>
+                </div>
+
+                <!-- Username and Bio -->
+                <div class="w-full">
+                    {% if not profile.bio %}
+                    <textarea name="bio" placeholder="Add your bio here..."
+                        class="mt-2 w-full px-3 py-2 border border-purple-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm"
+                        rows="3"></textarea>
+                    <input type="submit" value="Submit"
+                        class="mt-3 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-purple-400" />
+                    {% else %}
+                    <p class="mt-5">
+                        <b>Bio :- </b>{{ profile.bio }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Adventures -->
+            <div class="mt-6 text-center md:text-left">
+                <h3 class="text-base sm:text-lg font-semibold text-yellow-600">
+                    Adventures:
+                    <span class="font-bold text-gray-800">{{ adventure_count }}</span>
+                </h3>
+            </div>
+        </form>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div
+        class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-300 flex justify-around items-center py-3 px-2 text-base sm:text-xl shadow-inner z-20">
+        <a href="/home" class="text-orange-500" aria-label="Home">🏠</a>
+        {% if request.user.is_authenticated %}
+        <a href="/activity_journal" class="text-yellow-500" aria-label="Activity Journal">⭐</a>
+        <a href="/user_profile" class="text-pink-500" aria-label="User Profile">📔</a>
+        {% else %}
+        <a href="/login" class="text-blue-600" aria-label="Login">🔐</a>
+        <a href="/register" class="text-green-600" aria-label="Register">📝</a>
+        {% endif %}
+
+    </div>
+
+    <script>
+        const btn = document.getElementById('toggleMenuBtn');
+        const menu = document.getElementById('toggleMenu');
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+        document.addEventListener('click', (e) => {
+            if (!btn.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+
+        const profileBtn = document.getElementById('profileToggleBtn');
+        const profileMenu = document.getElementById('profileMenu');
+        profileBtn.addEventListener('click', () => {
+            profileMenu.classList.toggle('hidden');
+        });
+        document.addEventListener('click', (e) => {
+            if (!profileBtn.contains(e.target) && !profileMenu.contains(e.target)) {
+                profileMenu.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>

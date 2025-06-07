@@ -1,0 +1,174 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DecideNow - Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes gradient-x {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .animated-gradient {
+            background: linear-gradient(270deg, #ec4899, #f59e0b, #10b981);
+            background-size: 600% 600%;
+            animation: gradient-x 6s ease infinite;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-orange-100 via-pink-50 to-yellow-100 text-gray-800 min-h-screen font-sans">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center px-4 sm:px-6 py-3 bg-white shadow-md sticky top-0 z-10 relative">
+        <div class="text-lg sm:text-xl font-bold text-orange-600 flex items-center gap-2">
+            🌀 <span>Spontana</span>
+        </div>
+
+        <!-- Toggle Button -->
+        <div class="relative">
+            <button id="toggleMenuBtn" class="text-xl text-pink-500 focus:outline-none">⚙️</button>
+
+            <div id="toggleMenu"
+                class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-md z-20">
+                <a href="/home" class="block px-4 py-2 hover:bg-gray-100">🏠 Home</a>
+                {% if request.user.is_authenticated %}
+                <a href="/activity_journal/" class="block px-4 py-2 hover:bg-gray-100">📒 Activity Journal</a>
+                <a href="/activity_journal/add_journal/" class="block px-4 py-2 hover:bg-gray-100">➕ Add Journal</a>
+                <a href="/user_profile" class="block px-4 py-2 hover:bg-gray-100">👤 User Profile</a>
+                <a href="/logout" class="block px-4 py-2 hover:bg-gray-100">🚪 Logout</a>
+                {% else %}
+                <a href="/login" class="block px-4 py-2 hover:bg-gray-100">🔐 Login</a>
+                <a href="/register" class="block px-4 py-2 hover:bg-gray-100">📝 Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto px-4 py-6">
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- Mood Section -->
+            <h2 class="text-lg font-bold text-pink-600 mb-3">Select Your Mood</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6" id="moodButtons">
+                {% for mood, emoji in moods %}
+                <button type="button"
+                    class="mood-btn bg-orange-400 hover:bg-yellow-500 text-white text-sm font-semibold py-3 rounded-lg shadow"
+                    data-mood="{{ mood }}">
+                    {{ emoji }} {{ mood }}
+                </button>
+                {% endfor %}
+            </div>
+
+            <!-- Time Section -->
+            <h2 class="text-lg font-bold text-pink-600 mb-3">Time Available</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6" id="durationButtons">
+                {% for dur in durations %}
+                <button type="button"
+                    class="duration-btn bg-green-400 hover:bg-green-500 text-white text-sm font-semibold py-3 rounded-lg shadow"
+                    data-duration="{{ dur }}">
+                    {{ dur }}
+                </button>
+                {% endfor %}
+
+            </div>
+
+            <!-- Hidden Inputs -->
+            <input type="hidden" name="selected_mood" id="selected_mood">
+            <input type="hidden" name="selected_duration" id="selected_duration">
+
+            <!-- Error Display -->
+            {% if error %}
+            <p class="text-red-500 mb-4">{{ error }}</p>
+            {% endif %}
+
+            <!-- Dare Me Button -->
+            <div class="flex justify-center sm:grid sm:grid-cols-3 mb-24 mt-7 px-2">
+                <button type="submit"
+                    class="animated-gradient text-white text-sm font-semibold py-3 rounded-lg shadow w-full sm:col-span-3 transition-transform transform hover:scale-105">
+                    Dare Me!
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div
+        class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-300 flex justify-around items-center py-3 px-2 text-base sm:text-xl shadow-inner z-20">
+        <a href="/home" class="text-orange-500" aria-label="Home">🏠</a>
+        {% if request.user.is_authenticated %}
+        <a href="/activity_journal" class="text-yellow-500" aria-label="Activity Journal">⭐</a>
+        <a href="/user_profile" class="text-pink-500" aria-label="User Profile">📔</a>
+        {% else %}
+        <a href="/login" class="text-blue-600" aria-label="Login">🔐</a>
+        <a href="/register" class="text-green-600" aria-label="Register">📝</a>
+        {% endif %}
+
+    </div>
+
+
+
+    <!-- Scripts -->
+    <script>
+        const moodButtons = document.querySelectorAll('.mood-btn');
+        const durationButtons = document.querySelectorAll('.duration-btn');
+        const form = document.querySelector('form');
+
+        moodButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                moodButtons.forEach(b => b.classList.remove('ring', 'ring-offset-2', 'ring-pink-500'));
+                btn.classList.add('ring', 'ring-offset-2', 'ring-pink-500');
+                document.getElementById('selected_mood').value = btn.dataset.mood;
+            });
+        });
+
+        durationButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                durationButtons.forEach(b => b.classList.remove('ring', 'ring-offset-2', 'ring-green-500'));
+                btn.classList.add('ring', 'ring-offset-2', 'ring-green-500');
+                document.getElementById('selected_duration').value = btn.dataset.duration;
+            });
+        });
+
+        form.addEventListener('submit', function (e) {
+            const mood = document.getElementById('selected_mood').value;
+            const duration = document.getElementById('selected_duration').value;
+            if (!mood || !duration) {
+                e.preventDefault();
+                alert("Please select both a mood and a time duration before continuing.");
+            }
+        });
+
+        const btn = document.getElementById('toggleMenuBtn');
+        const menu = document.getElementById('toggleMenu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!btn.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+    </script>
+
+</body>
+
+</html>

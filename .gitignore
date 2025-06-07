@@ -1,0 +1,6 @@
+Spontana_Proj/.env 
+__pycache__/ 
+*.pyc 
+*.sqlite3 
+/media/ 
+Spontana_Proj/.env 

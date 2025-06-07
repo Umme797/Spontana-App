@@ -1,0 +1,141 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Activity Journal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- UK Gradient Animation Style -->
+    <style>
+        @keyframes uk-gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .uk-animated-gradient {
+            background: linear-gradient(270deg, #00247d, #cf142b, #ffffff, #cf142b, #00247d);
+            background-size: 1000% 1000%;
+            animation: uk-gradient 8s ease infinite;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-bl from-orange-100 via-yellow-50 to-pink-100 text-gray-800 font-sans min-h-screen">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center px-4 py-3 bg-white shadow-md sticky top-0 z-10 relative">
+        <div class="text-lg sm:text-xl font-bold text-orange-600 flex items-center gap-2">
+            🌀 <span>Spontana</span>
+        </div>
+
+        <!-- Toggle Button -->
+        <div class="relative">
+            <button id="toggleMenuBtn" class="text-xl text-pink-500 focus:outline-none">⚙️</button>
+
+            <div id="toggleMenu"
+                class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-md z-20">
+                <a href="/home" class="block px-4 py-2 hover:bg-gray-100">🏠 Home</a>
+                {% if request.user.is_authenticated %}
+                <a href="/activity_journal/" class="block px-4 py-2 hover:bg-gray-100">📒 Activity Journal</a>
+                <a href="/activity_journal/add_journal/" class="block px-4 py-2 hover:bg-gray-100">➕ Add Journal</a>
+                <a href="/user_profile" class="block px-4 py-2 hover:bg-gray-100">👤 User Profile</a>
+                <a href="/logout" class="block px-4 py-2 hover:bg-gray-100">🚪 Logout</a>
+                {% else %}
+                <a href="/login" class="block px-4 py-2 hover:bg-gray-100">🔐 Login</a>
+                <a href="/register" class="block px-4 py-2 hover:bg-gray-100">📝 Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Activity Journal Content -->
+    <div class="max-w-screen-sm md:max-w-2xl lg:max-w-4xl mx-auto px-4 py-6">
+
+        <h1 class="text-2xl sm:text-3xl font-bold text-pink-600 mb-2 text-center sm:text-left">Activity Journal</h1>
+        <p class="text-sm text-gray-600 italic mb-6 text-center sm:text-left">
+            Log your experiences and revisit your memorable activities.
+        </p>
+
+        <!-- Journal Entries -->
+        {% for journal in journals %}
+        <div class="bg-white shadow-lg rounded-xl p-4 mb-6 border-2 border-pink-300">
+            <div class="flex flex-col md:flex-row gap-4 items-start md:items-center">
+                {% if journal.image %}
+                <img src="{{ journal.image.url }}" class="w-24 h-24 md:w-20 md:h-20 object-cover rounded-lg" />
+                {% else %}
+                <div class="w-24 h-24 md:w-20 md:h-20 bg-gray-300 rounded-lg"></div>
+                {% endif %}
+                <div class="flex-1">
+                    <h2 class="font-bold text-lg text-blue-600">{{ journal.title }}</h2>
+                    <p class="text-xs text-gray-500">{{ journal.date }}</p>
+                    <p class="text-xs text-gray-500">{{ journal.mood }}</p>
+                    <p class="text-xs text-gray-500">{{ journal.duration }}</p>
+                    <p class="text-sm mt-1 text-gray-700 break-words">{{ journal.description }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center text-gray-500">No journal entries found.</p>
+        {% endfor %}
+
+        <!-- Add New Entry Button with UK Gradient Animation -->
+        <div class="flex justify-center mb-20 sm:mb-10">
+            <a href="add_journal/">
+                <button
+                    class="uk-animated-gradient text-white font-bold py-2 px-6 rounded-full shadow-md transition-all hover:opacity-90">
+                    ➕ Add New Entry
+                </button>
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div
+        class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-300 flex justify-around items-center py-3 px-2 text-base sm:text-xl shadow-inner z-20">
+
+        <!-- Always visible -->
+        <a href="/home" class="text-orange-500" aria-label="Home">🏠</a>
+
+        <!-- Only visible if user is logged in -->
+        {% if request.user.is_authenticated %}
+        <a href="/activity_journal" class="text-yellow-500" aria-label="Activity Journal">⭐</a>
+        <a href="/user_profile" class="text-pink-500" aria-label="User Profile">📔</a>
+        {% else %}
+        <a href="/login" class="text-blue-600" aria-label="Login">🔐</a>
+        <a href="/register" class="text-green-600" aria-label="Register">📝</a>
+        {% endif %}
+
+    </div>
+
+    <script>
+        const btn = document.getElementById('toggleMenuBtn');
+        const menu = document.getElementById('toggleMenu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!btn.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+    </script>
+
+</body>
+
+</html>

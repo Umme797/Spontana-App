@@ -1,0 +1,45 @@
+{% load i18n %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% trans "Google Sign In" %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body
+    class="bg-gradient-to-b from-yellow-100 via-pink-100 to-purple-100 min-h-screen font-sans flex items-center justify-center px-4">
+
+    <div class="w-full max-w-sm sm:max-w-md bg-white rounded-2xl shadow-xl px-6 sm:px-8 py-8 sm:py-10">
+        <!-- Logo -->
+        <div class="flex flex-col items-center mb-6">
+            <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gray-300 rounded-full mb-3"></div>
+            <h1 class="text-xl sm:text-2xl font-bold text-purple-700">Spontaneo</h1>
+            <p class="text-sm text-gray-600 mt-1 text-center">{% trans "Sign in using your Google account" %}</p>
+        </div>
+
+        <!-- Google Login Form -->
+        <form method="post" action="">
+            {% csrf_token %}
+            <div class="space-y-4">
+                <button type="submit"
+                    class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition">
+                    {% trans "Continue with Google" %}
+                </button>
+            </div>
+        </form>
+
+        <div class="text-center mt-6 text-sm">
+            <a href="{% url 'account_login' %}" class="text-pink-600 font-semibold hover:underline">
+                {% trans "Back to Login" %}
+            </a>
+        </div>
+    </div>
+
+</body>
+
+</html>

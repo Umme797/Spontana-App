@@ -1,0 +1,130 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ activity.title }} - DecideNow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Gradient Animation Style -->
+    <style>
+        @keyframes gradient-x {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .animated-gradient {
+            background: linear-gradient(270deg, #a855f7, #ec4899, #facc15, #10b981);
+            background-size: 800% 800%;
+            animation: gradient-x 6s ease infinite;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-orange-100 via-pink-50 to-yellow-100 text-gray-800 min-h-screen font-sans">
+
+    <!-- Header -->
+    <div class="flex flex-wrap justify-between items-center w-full px-4 py-3 bg-white shadow-md sticky top-0 z-10">
+        <div class="text-xl font-bold text-orange-600 flex items-center gap-2 mb-2 sm:mb-0">
+            🌀 <span>Spontana</span>
+        </div>
+
+        <!-- Toggle Button -->
+        <div class="relative">
+            <button id="toggleMenuBtn" class="text-xl text-pink-500 focus:outline-none">⚙️</button>
+            <div id="toggleMenu"
+                class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-md z-20">
+                <a href="/home" class="block px-4 py-2 hover:bg-gray-100">🏠 Home</a>
+                {% if request.user.is_authenticated %}
+                <a href="/activity_journal/" class="block px-4 py-2 hover:bg-gray-100">📒 Activity Journal</a>
+                <a href="/activity_journal/add_journal/" class="block px-4 py-2 hover:bg-gray-100">➕ Add Journal</a>
+                <a href="/user_profile" class="block px-4 py-2 hover:bg-gray-100">👤 User Profile</a>
+                {% else %}
+                <a href="/login" class="block px-4 py-2 hover:bg-gray-100">🔐 Login</a>
+                <a href="/register" class="block px-4 py-2 hover:bg-gray-100">📝 Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="w-full max-w-xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        <div class="bg-white shadow-lg rounded-2xl p-6 border border-orange-200">
+            <h1 class="text-2xl font-bold text-pink-600 mb-4">{{ activity.title }}</h1>
+            <p class="text-gray-700 text-base leading-relaxed">{{ activity.description }}</p>
+
+            <!-- Add Activity -->
+            <div class="flex justify-center mt-10 mb-2">
+                {% if request.user.is_authenticated %}
+                <a href="/activity_journal/">
+                    <button
+                        class="animated-gradient text-white font-bold py-2 px-6 rounded-full shadow-md transition-all hover:opacity-90">
+                        Activity Journal
+                    </button>
+                </a>
+                {% else %}
+                <a href="/login">
+                    <button
+                        class="animated-gradient text-white font-bold py-2 px-6 rounded-full shadow-md transition-all hover:opacity-90">
+                        Login to Access Journal
+                    </button>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div
+        class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-300 flex justify-around items-center py-3 px-2 text-xl shadow-inner z-20">
+
+        <!-- Always visible -->
+        <a href="/home" class="text-orange-500 text-xl px-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
+            aria-label="Home">🏠</a>
+
+        {% if request.user.is_authenticated %}
+        <a href="/activity_journal"
+            class="text-yellow-500 text-xl px-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
+            aria-label="Activity Journal">⭐</a>
+        <a href="/user_profile"
+            class="text-pink-500 text-xl px-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
+            aria-label="User Profile">📔</a>
+        {% else %}
+        <a href="/login" class="text-blue-600 text-xl px-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
+            aria-label="Login">🔐</a>
+        <a href="/register"
+            class="text-green-600 text-xl px-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
+            aria-label="Register">📝</a>
+        {% endif %}
+
+    </div>
+
+    <!-- Menu Toggle Script -->
+    <script>
+        const btn = document.getElementById('toggleMenuBtn');
+        const menu = document.getElementById('toggleMenu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!btn.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+    </script>
+
+</body>
+
+</html>

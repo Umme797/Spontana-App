@@ -1,7 +1,7 @@
 # Spontana-App 🎉
 
 
-Spontana is a fun and interactive web app that helps users break the monotony of everyday life by suggesting spontaneous activities based on their mood and available time. Whether you're feeling adventurous, calm, or bored – Spontana is here to dare you into doing something exciting!
+Spontana is a fun and interactive web app that helps users break the monotony of everyday life by suggesting spontaneous activities based on their mood and available time. Whether you're feeling adventurous, calm, or bored, Spontana is here to dare you to do something exciting!
 
 
 ## 🌟 Features
@@ -19,12 +19,12 @@ Spontana is a fun and interactive web app that helps users break the monotony of
 
 ## 🛠️ Tech Stack
 - **Frontend**: HTML, TailwindCSS, JavaScript, Bootstrap (optional)
-- **Backend**: *Django *
-- **Database**: *MySQL *
+- **Backend**: Django
+- **Database**: MySQL
 
 
 ## 🔒 Authentication
-- User registration and login required to access the **Activity Journal**.
+- User registration and login are required to access the **Activity Journal**.
 - Secure password handling and session management.
 
 
